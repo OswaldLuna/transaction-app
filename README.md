@@ -42,7 +42,7 @@ Crea un archivo `.env` en la raíz del proyecto con las siguientes variables:
 POSTGRES_USER=postgres
 POSTGRES_PASSWORD=tu_password_seguro
 POSTGRES_DB=transactions_db
-DATABASE_HOST=db
+POSTGRES_HOST=db
 POSTGRES_PORT=5432
 
 # Redis
