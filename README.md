@@ -115,7 +115,7 @@ El sistema incluye un script RPA para extraer información de Wikipedia:
 
 ```bash
 # Ejecutar el RPA (requiere que el backend esté corriendo)
-docker-compose exec backend python app/rpa/wiki_rpa.py
+docker-compose exec backend python app/rpa/wiki_rpa.py <termino>
 ```
 
 **Funcionalidad:**
