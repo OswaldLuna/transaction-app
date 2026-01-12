@@ -19,6 +19,6 @@ app.add_middleware(
 app.include_router(transactions.router, prefix="/transactions",tags=["Transactions"])
 app.include_router(assistant.router, prefix="/assistant", tags=["Assistant"])
 
-@app.get
+@app.get("/")
 def root():
     return {"message": "API Online"}
