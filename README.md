@@ -42,10 +42,12 @@ Crea un archivo `.env` en la raíz del proyecto con las siguientes variables:
 POSTGRES_USER=postgres
 POSTGRES_PASSWORD=tu_password_seguro
 POSTGRES_DB=transactions_db
-DATABASE_URL=postgresql://postgres:tu_password_seguro@db:5432/transactions_db
+DATABASE_HOST=db
+POSTGRES_PORT=5432
 
 # Redis
-REDIS_URL=redis://redis:6379/0
+REDIS_HOST=redis
+REDIS_PORT=6379
 
 # OpenAI
 OPENAI_API_KEY=tu_api_key_de_openai
