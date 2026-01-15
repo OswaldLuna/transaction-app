@@ -5,6 +5,17 @@ interface Props {
 }
 
 export default function TransactionList({ transactions }: Props) {
+  const formatAmount = (amount: number): string => {
+    return new Intl.NumberFormat('en-US', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    }).format(amount);
+  };
+
+  const translateType = (type: string): string => {
+    return type === "deposit" ? "Depósito" : "Retiro";
+  };
+
   return (
     <div className="mt-6">
       <h2 className="text-lg font-semibold mb-2">Transacciones</h2>
@@ -25,8 +36,8 @@ export default function TransactionList({ transactions }: Props) {
             <tr key={t.id} className="border-b text-center">
               <td className="p-2">{t.id}</td>
               <td className="p-2">{t.user_id}</td>
-              <td className="p-2">{t.amount}</td>
-              <td className="p-2">{t.type}</td>
+              <td className="p-2">${formatAmount(t.amount)}</td>
+              <td className="p-2">{translateType(t.type)}</td>
               <td className="p-2 font-semibold">
                 <span
                   className={

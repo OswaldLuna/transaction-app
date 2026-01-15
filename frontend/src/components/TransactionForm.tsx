@@ -14,14 +14,51 @@ export default function TransactionForm({ onCreated }: Props) {
     type: "deposit",
   });
   const [loading, setLoading] = useState(false);
+  const [displayAmount, setDisplayAmount] = useState("0");
+
+  const formatCurrency = (value: string): string => {
+    // Remover todo excepto números y punto decimal
+    const cleanValue = value.replace(/[^0-9.]/g, "");
+    
+    // Evitar múltiples puntos decimales
+    const parts = cleanValue.split(".");
+    if (parts.length > 2) {
+      return displayAmount;
+    }
+    
+    // Separar la parte entera de la decimal
+    const integerPart = parts[0];
+    const decimalPart = parts[1];
+    
+    // Formatear la parte entera con comas
+    const formattedInteger = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    
+    // Retornar con o sin decimales
+    return decimalPart !== undefined ? `${formattedInteger}.${decimalPart}` : formattedInteger;
+  };
+
+  const parseFormattedValue = (value: string): number => {
+    const cleanValue = value.replace(/,/g, "");
+    return cleanValue === "" ? 0 : parseFloat(cleanValue) || 0;
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
 
-    setForm({
-      ...form,
-      [name]: name === "user_id" || name === "amount" ? Number(value) : value,
-    });
+    if (name === "amount") {
+      const formatted = formatCurrency(value);
+      setDisplayAmount(formatted);
+      const numericValue = parseFormattedValue(formatted);
+      setForm({
+        ...form,
+        amount: numericValue,
+      });
+    } else {
+      setForm({
+        ...form,
+        [name]: name === "user_id" ? Number(value) : value,
+      });
+    }
   };
 
   const submit = async (e: React.FormEvent) => {
@@ -31,6 +68,7 @@ export default function TransactionForm({ onCreated }: Props) {
       const res = await api.post<Transaction>("/transactions/create", form);
       onCreated(res.data);
       setForm({ user_id: 1, amount: 0, type: "deposit" });
+      setDisplayAmount("0");
 
       if (res.data.status === "procesado") {
         toast.success(`Esta transacción #${res.data.id} ya fue procesada`);
@@ -75,16 +113,19 @@ export default function TransactionForm({ onCreated }: Props) {
         <label htmlFor="amount" className="block text-sm font-medium mb-1">
           Monto
         </label>
-        <input
-          id="amount"
-          name="amount"
-          placeholder="Monto"
-          value={form.amount}
-          type="number"
-          onChange={handleChange}
-          className="border p-2 w-full rounded"
-          required
-        />
+        <div className="relative">
+          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-600">$</span>
+          <input
+            id="amount"
+            name="amount"
+            placeholder="0.00"
+            value={displayAmount}
+            type="text"
+            onChange={handleChange}
+            className="border p-2 pl-7 w-full rounded"
+            required
+          />
+        </div>
       </div>
 
       <div className="mb-2">
